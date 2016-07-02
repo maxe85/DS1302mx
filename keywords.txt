@@ -1,0 +1,27 @@
+#######################################
+# Syntax Coloring DS1302mx
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+RTC     KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+getTime	KEYWORD2
+setTime	KEYWORD2
+clw		KEYWORD2
+getRam	KEYWORD2
+setRam	KEYWORD2
+printTime	KEYWORD2
+serial	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+Buffer	LITERAL1
