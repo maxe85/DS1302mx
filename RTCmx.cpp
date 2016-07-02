@@ -80,10 +80,9 @@ RTC::RTC(const uint8_t CEpin, const uint8_t IOpin, const uint8_t CLpin) :
 {
   pinMode(_CEpin, OUTPUT);
   pinMode(_CLpin, OUTPUT);
-  getTime();
 #if SETUP_MODE
 	uint8_t seconds;
-  {
+  {  //  clearing the halt flag
 	const SPISession s (_CEpin, _IOpin, _CLpin);
 	_send(0x81);
 	seconds = 0x7f & _read();
@@ -93,15 +92,19 @@ RTC::RTC(const uint8_t CEpin, const uint8_t IOpin, const uint8_t CLpin) :
 	_send(0x80);
 	_send(seconds);
   }
-  {
+  {  // clearing the write-protect flag
   const SPISession s (_CEpin, _IOpin, _CLpin);
-	
-  // disabling write-protect
 	_send(0x8E);
 	_send(0x00); 
-  setTime();
-}
+  }
+  {  //  set the TRICKLE_CHARGE_REGISTER
+  const SPISession s (_CEpin, _IOpin, _CLpin);
+	_send(0x90);
+	_send(TRICKLE_CHARGE_REGISTER); 
+  }
 #endif
+
+  getTime();
 }
 
 
@@ -184,11 +187,11 @@ void RTC::clw() {
   t[1] += (_ramClw / 60000) % 60;
   t[2] += (_ramClw / 3600000) % 24;
 
-  if (t[0] > 59) {
+  while (t[0] > 59) {
     t[0] -= 60;
     t[1]++;
   }
-  if (t[1] > 59) {
+  while (t[1] > 59) {
     t[1] -= 60;
     t[2]++;
   }
